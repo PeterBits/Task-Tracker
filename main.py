@@ -8,51 +8,39 @@ def create_task_file():
         json.dump([], json_file)
 
 def get_tasks():
-    # TODO REFACTOR
     file_list = os.listdir('./')
-    if 'tasks_data.json' not in file_list:
-        print(1)
-        create_task_file()
-        return False
-    task_file = [file_list for file_list in file_list if file_list.endswith('.json')][0]
+    tasks_file = [file_list for file_list in file_list if file_list.endswith('.json')][0]
 
-    if task_file:
-        print(2)
-        file_path = os.path.join('./', task_file)
-        print(f"Processing file: {task_file}")
-
-        try:
-            with open(file_path, 'r') as json_file:
-                data = json.load(json_file)
-                print(f"Data: {data}")
-                if data != None:
-                    
-                    if(not len(data)):
-                        print("Dont have tasks yet")
-                        return False
-
-                    
-                    print(f"Data found: {data}")
-                    return data
-
-                else:
-                    print(f"Data not found, creating new file")
-                    return create_task_file()
-            
-        except Exception as e:
-            print(f"Failed to process {task_file}: {e}")
+    if tasks_file:
+        file_path = os.path.join('./', tasks_file)
+        print(f"Processing file: {tasks_file}")
+        with open(file_path, 'r') as json_file:
+            return json.load(json_file)
     else:
-        print("No task files found")
-        return create_task_file()
+        return False
 
 
+def already_has_the_task(new_task, task_list ):
+    return any(task == new_task for task in task_list)
+    
+
+def add_task(task: str):
+    task_list = get_tasks()
+    if(already_has_the_task(task, task_list)):
+        print("Already has the task...")
+        return
+    task_list.append(task)
+    with open('tasks_data.json', 'w') as json_file:
+        json.dump(task_list, json_file)
+    print(f"Task added: {task}")
 
 class MyCLI(cmd.Cmd):
     prompt = '>> '  
     intro = 'Welcome to Task Tracker CLI of PeterBits. Type "help" for available commands.'  
     
     def  preloop ( self ): 
-        get_tasks()
+        # TODO Add create file or write file before get task
+        task_list = get_tasks()
     
     def  precmd ( self, line ): 
     # run before the command is executed
@@ -64,17 +52,19 @@ class MyCLI(cmd.Cmd):
     
     #  Python automatically looks for a method in your class named do_<command> and executes it if it exists.
     def do_hello(self, line):
-        """Print a greeting."""
         print("Hello, World!")
+    
+    def do_add(self, line):
+        print(line)
+        add_task(line)
 
 
     def do_quit(self, line):
-        """Exit the CLI."""
         return True
     
     def do_get_tasks(self, line):
-        """Get all tasks."""
-        get_tasks()
+        task_list = get_tasks()
+        prtin(task_list)
 
 
 if __name__ == '__main__':
