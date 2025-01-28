@@ -10,7 +10,10 @@ from methods import (
     update_task,
     mark_in_progress,
     mark_done,
-    mark_todo
+    mark_todo,
+    list_done_tasks,
+    list_in_progress_tasks,
+    list_todo_tasks,
 )
 
 class MyCLI(cmd.Cmd):
@@ -61,7 +64,19 @@ class MyCLI(cmd.Cmd):
         
     def do_todo(self, line):
         """Marks a task as 'to do' by its ID. Syntax: todo <id>."""  
-        mark_todo(line)   
+        mark_todo(line)
+
+    def do_list_done(self, _):
+        """Displays all tasks marked as 'done'."""
+        list_done_tasks()
+
+    def do_list_in_progress(self, _):
+        """Displays all tasks marked as 'in progress'."""
+        list_in_progress_tasks()
+        
+    def do_list_todo(self, _):
+        """Displays all tasks marked as 'to do'."""
+        list_todo_tasks()
 
     def do_help(self, arg):
         """Shows help information for commands."""
@@ -70,17 +85,20 @@ class MyCLI(cmd.Cmd):
         else:
             print(
                 "\nAvailable commands:\n"
-                "  hello     - Greets the user.\n"
-                "  clear     - Clears the terminal.\n"
-                "  quit      - Exits the Task Tracker CLI.\n"
-                "  list      - Displays all tasks.\n"
-                "  add       - Adds a new task. Syntax: add \"task description\".\n"
-                "  del       - Deletes a task by its ID. Syntax: del <id>.\n"
-                "  update    - Updates a task description by its ID. Syntax: update <id> \"new description\".\n"
-                "  progress  - Marks a task as 'in progress' by its ID. Syntax: progress <id>.\n"
-                "  done      - Marks a task as 'done' by its ID. Syntax: done <id>.\n"
-                "  todo      - Marks a task as 'to do' by its ID. Syntax: todo <id>.\n"
-                "  help      - Shows help information for commands.\n"
+                "  hello             - Greets the user.\n"
+                "  clear             - Clears the terminal.\n"
+                "  quit              - Exits the Task Tracker CLI.\n"
+                "  list              - Displays all tasks.\n"
+                "  add               - Adds a new task. Syntax: add \"task description\".\n"
+                "  del               - Deletes a task by its ID. Syntax: del <id>.\n"
+                "  update            - Updates a task description by its ID. Syntax: update <id> \"new description\".\n"
+                "  progress          - Marks a task as 'in progress' by its ID. Syntax: progress <id>.\n"
+                "  done              - Marks a task as 'done' by its ID. Syntax: done <id>.\n"
+                "  todo              - Marks a task as 'to do' by its ID. Syntax: todo <id>.\n"
+                "  list-done         - Displays all tasks marked as 'done'.\n"
+                "  list-in-progress  - Displays all tasks marked as 'in progress'.\n"
+                "  list-todo         - Displays all tasks marked as 'to do'.\n"
+                "  help              - Shows help information for commands.\n"
             )
 
 if __name__ == '__main__':

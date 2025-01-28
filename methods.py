@@ -79,7 +79,10 @@ def update_status(task_id, new_status):
     with open('tasks_data.json', 'w') as json_file:
         json.dump(task_list_updated, json_file, indent=4)
     print(f"Task {task_id} in progress.")
-
+    
+def filter_by_status(status):
+    task_list = get_tasks()
+    return list(filter(lambda task : task["status"] == status , task_list))
 
 def add_task(line):
     task_description = get_description_text(line)
@@ -145,3 +148,15 @@ def mark_done(task_id):
     
 def mark_todo(task_id):
     update_status(task_id, TASK_STATUS["TODO"])
+
+def list_done_tasks():
+    task_done = filter_by_status(TASK_STATUS["DONE"])
+    print_json(task_done)
+    
+def list_in_progress_tasks():
+    task_in_progress = filter_by_status(TASK_STATUS["IN_PROGRESS"])
+    print_json(task_in_progress)
+    
+def list_todo_tasks():
+    task_todo = filter_by_status(TASK_STATUS["TODO"])
+    print_json(task_todo)
