@@ -13,12 +13,21 @@ from datetime import datetime
 # }
 # """
 
-def get_params_for_update(line):
+TASK_STATUS = {
+    "TODO": 'todo',
+    "IN_PROGRESS": "in-progress",
+    "DONE": "done"
+}
+
+def get_current_time():
+    return datetime.now().strftime("%H:%M %d/%m/%Y")
+
+def get_id_and_description(line):
     match = re.search(r'^\s*(\d+)\s+"(.*?)"', line)  
-    print('Match encontrado:', match)  
     if match:
         return match.group(1), match.group(2)  
-    return None, None  
+    return None, None
+  
 
 def get_description_text(line):
     match = re.search(r'"(.*?)"', line)
@@ -47,16 +56,30 @@ def get_tasks():
     else:
         return print('Dont have tasks yet.')
 
-
-def already_has_the_task(new_task, task_list ):
-    return any(task == new_task for task in task_list)
-
 def generate_unique_id(task_list):
     existing_ids = {obj['id'] for obj in task_list}
     unique_id = 1  
     while str(unique_id) in existing_ids:
         unique_id += 1  
     return str(unique_id) 
+
+def update_status(task_id, new_status):
+    task_list = get_tasks()
+    task_list_updated = []
+    for task in task_list:
+        if(task["id"] == task_id):
+            task_list_updated.append({
+                **task,
+                "status": new_status,
+                "updated_at": get_current_time()
+            })
+        else:
+            task_list_updated.append(task)
+        
+    with open('tasks_data.json', 'w') as json_file:
+        json.dump(task_list_updated, json_file, indent=4)
+    print(f"Task {task_id} in progress.")
+
 
 def add_task(line):
     task_description = get_description_text(line)
@@ -68,9 +91,9 @@ def add_task(line):
     new_task = {
         "id": generate_unique_id(task_list),
         "description": task_description.upper(),
-        "created_at": datetime.now().strftime("%H:%M %d/%m/%Y"),
+        "created_at": get_current_time(),
         "status": "todo",
-        "updated_at": datetime.now().strftime("%H:%M %d/%m/%Y")
+        "updated_at": get_current_time()
         
     }
     task_list.append(new_task)
@@ -86,7 +109,7 @@ def delete_task(task_id):
     print(f"Task deleted: {task_id}" if len(task_list_updated) < len(task_list) else "Task dont found.")
     
 def update_task(line):
-    task_id, description_task = get_params_for_update(line)
+    task_id, description_task = get_id_and_description(line)
     if not task_id or not description_task:
         print('Invalid input. Use the format: update <id> "<new description>".')
         return
@@ -99,7 +122,7 @@ def update_task(line):
             task = {
                 **task,
                 "description": description_task,
-                "updated_at": datetime.now().strftime("%H:%M %d/%m/%Y")
+                "updated_at": get_current_time()
             }
             task_found = True
                 
@@ -113,3 +136,12 @@ def update_task(line):
         json.dump(task_list_updated, json_file, indent=4)
 
     print(f"Task {task_id} updated successfully.")
+    
+def mark_in_progress(task_id):
+    update_status(task_id, TASK_STATUS["IN_PROGRESS"])
+    
+def mark_done(task_id):
+    update_status(task_id, TASK_STATUS["DONE"])
+    
+def mark_todo(task_id):
+    update_status(task_id, TASK_STATUS["TODO"])
