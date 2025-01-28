@@ -1,5 +1,6 @@
 import os
 import json
+import re
 from datetime import datetime
 
 # """
@@ -12,6 +13,11 @@ from datetime import datetime
 # }
 # """
 
+def get_description_text(line):
+    match = re.search(r'"(.*?)"', line)
+    if match:
+        return match.group(1)  
+    return None  
 
 def print_json(data):
     print(json.dumps(data, indent = 4))
@@ -45,7 +51,12 @@ def generate_unique_id(task_list):
         unique_id += 1  
     return str(unique_id) 
 
-def add_task(task_description: str):
+def add_task(line):
+    task_description = get_description_text(line)
+    if(not task_description): 
+        print('You have not entered a valid task. Ex: add "first task".')
+        return
+        
     task_list = get_tasks()
     new_task = {
         "id": generate_unique_id(task_list),
@@ -55,7 +66,6 @@ def add_task(task_description: str):
         "updated_at": datetime.now().strftime("%H:%M %d/%m/%Y")
         
     }
-    
     task_list.append(new_task)
     with open('tasks_data.json', 'w') as json_file:
         json.dump(task_list, json_file, indent=4)
