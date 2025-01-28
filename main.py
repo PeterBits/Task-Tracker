@@ -13,11 +13,10 @@ def get_tasks():
 
     if tasks_file:
         file_path = os.path.join('./', tasks_file)
-        print(f"Processing file: {tasks_file}")
         with open(file_path, 'r') as json_file:
             return json.load(json_file)
     else:
-        return False
+        return print('Dont have tasks yet.')
 
 
 def already_has_the_task(new_task, task_list ):
@@ -37,34 +36,36 @@ def add_task(task: str):
 class MyCLI(cmd.Cmd):
     prompt = '>> '  
     intro = 'Welcome to Task Tracker CLI of PeterBits. Type "help" for available commands.'  
-    
-    def  preloop ( self ): 
-        # TODO Add create file or write file before get task
-        task_list = get_tasks()
-    
-    def  precmd ( self, line ): 
-    # run before the command is executed
-        return line.lower()  
-    
-    def  postcmd ( self, stop, line ): 
-    # run after the command is executed
-        return stop   
-    
     #  Python automatically looks for a method in your class named do_<command> and executes it if it exists.
-    def do_hello(self, line):
+
+    # Functions in the cmd.Cmd class must accept two arguments: self and an additional argument for user input after the command name, as required by the cmd module in Python. 
+    def do_hello(self, _):
         print("Hello, World!")
-    
-    def do_add(self, line):
-        print(line)
-        add_task(line)
 
-
-    def do_quit(self, line):
+    def do_quit(self, _):
         return True
     
-    def do_get_tasks(self, line):
+    # Method on active task tracker CLI
+    def  preloop ( self ): 
+        create_task_file()
+    
+    def do_ls(self, _):
         task_list = get_tasks()
-        prtin(task_list)
+        print(task_list) if len(task_list) > 0 else print('Dont have tasks yet.')
+
+    def do_add(self, line):
+        add_task(line)
+
+    
+
+
+   # run before the command is executed
+    # def  precmd ( self, line ): 
+        # return line.lower()  
+    
+    # def  postcmd ( self, stop, line ): 
+    # run after the command is executed
+        # return stop   
 
 
 if __name__ == '__main__':
