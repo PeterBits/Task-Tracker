@@ -1,10 +1,5 @@
 import cmd
-import os
-import json
-from datetime import datetime
-import uuid
-
-
+from methods import add_task, print_json, create_task_file, get_tasks, get_task_file
 # """
 # task_example = {
 #     id: 1,
@@ -15,51 +10,7 @@ import uuid
 # }
 # """
 
-def print_json(data):
-    print(json.dumps(data, indent = 4))
 
-def create_task_file():
-    with open('tasks_data.json', 'w') as json_file:
-        json.dump([], json_file)
-
-def get_tasks():
-    file_list = os.listdir('./')
-    tasks_file = [file_list for file_list in file_list if file_list.endswith('.json')][0]
-
-    if tasks_file:
-        file_path = os.path.join('./', tasks_file)
-        with open(file_path, 'r') as json_file:
-            return json.load(json_file)
-    else:
-        return print('Dont have tasks yet.')
-
-
-def already_has_the_task(new_task, task_list ):
-    return any(task == new_task for task in task_list)
-    
-
-def generate_unique_id(task_list):
-    existing_ids = {obj['id'] for obj in task_list}
-    unique_id = 1  
-    while str(unique_id) in existing_ids:
-        unique_id += 1  
-    return str(unique_id) 
-
-def add_task(task_description: str):
-    task_list = get_tasks()
-    new_task = {
-        "id": generate_unique_id(task_list),
-        "description": task_description.upper(),
-        "created_at": datetime.now().strftime("%H:%M %d/%m/%Y"),
-        "status": "todo",
-        "updated_at": datetime.now().strftime("%H:%M %d/%m/%Y")
-        
-    }
-    task_list.append(new_task)
-    
-    with open('tasks_data.json', 'w') as json_file:
-        json.dump(task_list, json_file)
-    print(f"Task added: {task_description}")
 
 class MyCLI(cmd.Cmd):
     prompt = '>> '  
@@ -75,7 +26,8 @@ class MyCLI(cmd.Cmd):
     
     # Method on active task tracker CLI
     def  preloop ( self ): 
-        create_task_file()
+        task_file = get_task_file()
+        if (not task_file): create_task_file()
     
     def do_ls(self, _):
         task_list = get_tasks()
