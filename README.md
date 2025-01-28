@@ -1,4 +1,3 @@
-````markdown
 # Task Tracker CLI
 
 A command-line tool to manage tasks efficiently. Add, update, delete, and track tasks in states like `todo`, `in-progress`, or `done`.
@@ -20,10 +19,9 @@ A command-line tool to manage tasks efficiently. Add, update, delete, and track 
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd task_traker
+   git clone https://github.com/PeterBits/Task-Tracker.git
+   cd Task-Tracker
    ```
-````
 
 3. Run the CLI:
    ```bash
@@ -103,20 +101,4 @@ pytest --cov=. --cov-report=term-missing
 - Python 3.8+
 - `pytest`
 - `pytest-cov`
-- `tabulate`
 
-Install dependencies with:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## License
-
-Licensed under the MIT License.
-
-```
-
-```
