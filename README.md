@@ -102,7 +102,7 @@ pytest --cov=. --cov-report=term-missing
 - `pytest`
 - `pytest-cov`
 
-## RoadMap Poryect
+## RoadMap Project
 https://roadmap.sh/projects/task-tracker
   
 
