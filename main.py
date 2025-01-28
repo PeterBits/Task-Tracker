@@ -1,4 +1,5 @@
 import cmd
+import os
 from methods import add_task, print_json, create_task_file, get_tasks, get_task_file, delete_task
 
 
@@ -10,6 +11,9 @@ class MyCLI(cmd.Cmd):
     # Functions in the cmd.Cmd class must accept two arguments: self and an additional argument for user input after the command name, as required by the cmd module in Python. 
     def do_hello(self, _):
         print("Hello, World!")
+        
+    def do_clear(self, arg):
+        os.system('cls' if os.name == 'nt' else 'clear')
 
     def do_quit(self, _):
         return True
