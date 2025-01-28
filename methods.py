@@ -124,7 +124,7 @@ def update_task(line):
         if task["id"] == task_id:
             task = {
                 **task,
-                "description": description_task,
+                "description": description_task.upper(),
                 "updated_at": get_current_time()
             }
             task_found = True
