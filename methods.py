@@ -13,6 +13,13 @@ from datetime import datetime
 # }
 # """
 
+def get_params_for_update(line):
+    match = re.search(r'^\s*(\d+)\s+"(.*?)"', line)  
+    print('Match encontrado:', match)  
+    if match:
+        return match.group(1), match.group(2)  
+    return None, None  
+
 def get_description_text(line):
     match = re.search(r'"(.*?)"', line)
     if match:
@@ -54,7 +61,7 @@ def generate_unique_id(task_list):
 def add_task(line):
     task_description = get_description_text(line)
     if(not task_description): 
-        print('You have not entered a valid task. Ex: add "first task".')
+        print('Invalid command for add task. Try: add "first task".')
         return
         
     task_list = get_tasks()
@@ -78,3 +85,31 @@ def delete_task(task_id):
         json.dump(task_list_updated, json_file, indent=4)
     print(f"Task deleted: {task_id}" if len(task_list_updated) < len(task_list) else "Task dont found.")
     
+def update_task(line):
+    task_id, description_task = get_params_for_update(line)
+    if not task_id or not description_task:
+        print('Invalid input. Use the format: update <id> "<new description>".')
+        return
+
+    task_list = get_tasks()
+    task_found = False
+    task_list_updated = []
+    for task in task_list:
+        if task["id"] == task_id:
+            task = {
+                **task,
+                "description": description_task,
+                "updated_at": datetime.now().strftime("%H:%M %d/%m/%Y")
+            }
+            task_found = True
+                
+        task_list_updated.append(task)
+
+    if not task_found:
+        print(f"No task found with ID: {task_id}")
+        return
+
+    with open('tasks_data.json', 'w') as json_file:
+        json.dump(task_list_updated, json_file, indent=4)
+
+    print(f"Task {task_id} updated successfully.")

@@ -1,6 +1,15 @@
 import cmd
 import os
-from methods import add_task, print_json, create_task_file, get_tasks, get_task_file, delete_task
+from methods import (
+    add_task,
+    print_json,
+    create_task_file,
+    get_tasks,
+    get_task_file,
+    delete_task,
+    update_task,
+    get_params_for_update
+)
 
 
 class MyCLI(cmd.Cmd):
@@ -23,7 +32,7 @@ class MyCLI(cmd.Cmd):
         task_file = get_task_file()
         if (not task_file): create_task_file()
     
-    def do_ls(self, _):
+    def do_list(self, _):
         task_list = get_tasks()
         print_json(task_list) if len(task_list) > 0 else print('Dont have tasks yet.')
 
@@ -32,6 +41,9 @@ class MyCLI(cmd.Cmd):
 
     def do_del(self, task_id):
         delete_task(task_id)
+        
+    def do_update(self, line):
+        update_task(line)
     
 
 
