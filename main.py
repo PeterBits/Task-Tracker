@@ -1,15 +1,5 @@
 import cmd
-from methods import add_task, print_json, create_task_file, get_tasks, get_task_file
-# """
-# task_example = {
-#     id: 1,
-#     description: "Limpiar la casa",
-#     status: "todo" | "in-progress" | "done",
-#     createdAt: 12/12/2020,
-#     updatedAt: 14/12/2020,
-# }
-# """
-
+from methods import add_task, print_json, create_task_file, get_tasks, get_task_file, delete_task
 
 
 class MyCLI(cmd.Cmd):
@@ -36,6 +26,8 @@ class MyCLI(cmd.Cmd):
     def do_add(self, line):
         add_task(line)
 
+    def do_del(self, task_id):
+        delete_task(task_id)
     
 
 
